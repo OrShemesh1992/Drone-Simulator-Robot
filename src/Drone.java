@@ -15,7 +15,7 @@ public class Drone {
 	private Point pointFromStart;
 	public Point startPoint;
 	public List<Lidar> lidars;
-	private String drone_img_path = "D:\\Tests\\drone_3_pixels.png";
+	private String drone_img_path = "Maps\\drone_3_pixels.png";
 	public Map realMap;
 	private double rotation;
 	private double speed;
