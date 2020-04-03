@@ -144,10 +144,7 @@ public class Drone {
 		}
 		//Point p = getPointOnMap();
 		//g.drawImage(mImage,p.getX(),p.getY(),mImage.getWidth(),mImage.getHeight());
-		
-		
-		
-		
+
 		for(int i=0;i<lidars.size();i++) {
 			Lidar lidar = lidars.get(i);
 			lidar.paint(g);

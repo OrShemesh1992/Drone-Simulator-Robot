@@ -239,13 +239,14 @@ public class SimulationWindow {
 
 
     public void main() {
-        int map_num = 1;
+        int map_num = 6;
         Point[] startPoints = {
                 new Point(100, 50),
                 new Point(50, 60),
                 new Point(73, 68),
                 new Point(84, 73),
-                new Point(92, 100)};
+                new Point(92, 100),
+                new Point(100, 50)}; //array of start points to the each map
 
         Map map = new Map("Maps\\p1" + map_num + ".png", startPoints[map_num - 1]);
 
