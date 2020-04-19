@@ -70,7 +70,7 @@ public class AutoAlgo1 {
         if (isSpeedUp) {
             drone.speedUp(deltaTime);
         } else {
-            drone.slowDown(deltaTime);
+            drone.speedDown(deltaTime);
         }
     }
 
@@ -124,10 +124,10 @@ public class AutoAlgo1 {
         }
     }
 	/*
-	
+
 	public void fineEdges(int x,int y) {
 		int radius = 6;
-		
+
 		for(int i=y-radius;i<y+radius;i++) {
 			for(int j=x-radius;j<x+radius;j++) {
 				if(Math.abs(y-i) <= 1 && Math.abs(x-j) <= 1) {
@@ -150,7 +150,7 @@ public class AutoAlgo1 {
 			x1 = tempX;
 			y1 = tempY;
 		}
-		
+
 	     double deltax = x1 - x0;
 	     double deltay = y1 - y0;
 	     double deltaerr = Math.abs(deltay / deltax);    // Assume deltax != 0 (line is not vertical),
@@ -164,7 +164,7 @@ public class AutoAlgo1 {
                 error=error - deltax;
 	        }
 	     }
-	
+
 	}
 	*/
 
@@ -226,18 +226,22 @@ public class AutoAlgo1 {
     boolean isLeftRightRotationEnable = true;
 
     boolean is_risky = false;
-    int max_risky_distance = 150;
+    int max_risky_distance = 100;
     boolean try_to_escape = false;
-    double risky_dis = 0;
-    int max_angle_risky = 10;
 
-    boolean is_lidars_max = false;
+
+    boolean front_risk = false;
+    boolean right_risk = false;
+    boolean left_risk = false;
+    boolean start_left_turn = false;
+    boolean have_turn = false;
+
+    double risky_dis = 0;
+    int spin_by = 0;
 
 //    double save_point_after_seconds = 3;
 
     double max_distance_between_points = 100;
-
-//    boolean start_return_home = false;
 
     Point init_point;
 
@@ -265,7 +269,7 @@ public class AutoAlgo1 {
         if (SimulationWindow.return_home) {
             //if between drone and last point less than 100 cm
             if (Tools.getDistanceBetweenPoints(getLastPoint(), dronePoint) < max_distance_between_points) {
-                //if we have 0 or 1 point and distance to this point less than 100 cm is good enough
+                //if we have 0 or 1 point and distance to home point less than 100 cm so is good enough
                 if (points.size() <= 1 && Tools.getDistanceBetweenPoints(getLastPoint(), dronePoint) < max_distance_between_points / 5) {
                     speedDown();
                 } else {
@@ -274,90 +278,124 @@ public class AutoAlgo1 {
                 }
             }
         } else {
+            //if simulation does not in return home state so add points to map
             if (Tools.getDistanceBetweenPoints(getLastPoint(), dronePoint) >= max_distance_between_points) {
                 points.add(dronePoint);
                 mGraph.addVertex(dronePoint);
             }
         }
 
-        //check if the drone is not in a dangerous situation
+
+        Lidar lidar = drone.lidars.get(0);
+        double front_sensor_dist = lidar.current_distance;
+        Lidar lidar1 = drone.lidars.get(1);
+        double right_sensor_dist = lidar1.current_distance;
+        Lidar lidar2 = drone.lidars.get(2);
+        double left_sensor_dist = lidar2.current_distance;
+
+
+        int turn_coefficient = 1;
+
+        if (drone.getGyroRotation() % 359 < 1 && !start_left_turn) {
+            spin_by = 1;
+            have_turn = true;
+        }
+
+//        System.out.println("f: " + front_sensor_dist + ", r: " + right_sensor_dist + ", l: " + left_sensor_dist);
+
         if (!is_risky) {
-            Lidar lidar = drone.lidars.get(0);
-            if (lidar.current_distance <= max_risky_distance) {
-                is_risky = true;
-                risky_dis = lidar.current_distance;
-            }
+            System.out.println("no risk");
 
-            Lidar lidar1 = drone.lidars.get(1);
-            if (lidar1.current_distance <= max_risky_distance / 3) {
-                is_risky = true;
-            }
+            drone.speedUp(deltaTime);
 
-            Lidar lidar2 = drone.lidars.get(2);
-            if (lidar2.current_distance <= max_risky_distance / 3) {
-                is_risky = true;
-            }
-
-        } else { //dangerous situation
-            if (!try_to_escape) {
-                try_to_escape = true;
-                Lidar lidar1 = drone.lidars.get(1);
-                double a = lidar1.current_distance;
-
-                Lidar lidar2 = drone.lidars.get(2);
-                double b = lidar2.current_distance;
-
-                int spin_by = max_angle_risky;
-
-                if (a > 270 && b > 270) {
-                    is_lidars_max = true;
-                    Point l1 = Tools.getPointByDistance(dronePoint, lidar1.degrees + drone.getGyroRotation(), lidar1.current_distance);
-                    Point l2 = Tools.getPointByDistance(dronePoint, lidar2.degrees + drone.getGyroRotation(), lidar2.current_distance);
-                    Point last_point = getAvgLastPoint();
-                    double dis_to_lidar1 = Tools.getDistanceBetweenPoints(last_point, l1);
-                    double dis_to_lidar2 = Tools.getDistanceBetweenPoints(last_point, l2);
-
-                    if (SimulationWindow.return_home) {
-                        if (Tools.getDistanceBetweenPoints(getLastPoint(), dronePoint) < max_distance_between_points) {
-                            removeLastPoint();
-                        }
-                    } else {
-                        if (Tools.getDistanceBetweenPoints(getLastPoint(), dronePoint) >= max_distance_between_points) {
-                            points.add(dronePoint);
-                            mGraph.addVertex(dronePoint);
-                        }
-                    }
-
-                    spin_by = 90;
-                    if (SimulationWindow.return_home) {
-                        spin_by *= -1;
-                    }
-
-
-                    if (dis_to_lidar1 < dis_to_lidar2) {
-
-                        spin_by *= (-1);
-                    }
-                } else {
-
-
-                    if (a < b) {
-                        spin_by *= (-1);
-                    }
+            if (front_sensor_dist < max_risky_distance && front_sensor_dist != 0) {
+                if (front_sensor_dist < 30) {
+                    drone.speedDown(deltaTime * 10000);
                 }
+                front_risk = true;
+                is_risky = true;
+                risky_dis = front_sensor_dist;
+            }
 
+            if (right_sensor_dist < max_risky_distance / 2 && right_sensor_dist != 0) {
+                right_risk = true;
+                is_risky = true;
+                risky_dis = Math.min(risky_dis, right_sensor_dist);
+            }
 
-                spinBy(spin_by, true, new Func() {
-                    @Override
-                    public void method() {
-                        try_to_escape = false;
-                        is_risky = false;
-                    }
-                });
+            if (left_sensor_dist < max_risky_distance / 2 && left_sensor_dist != 0) {
+                left_risk = true;
+                is_risky = true;
+                risky_dis = Math.min(risky_dis, left_sensor_dist);
             }
         }
 
-        //}
+
+        //no risk and check if you far from right wall
+        if (!is_risky) {
+
+//            if (right_sensor_dist < 300 && right_sensor_dist != 0) {
+//            boolean empty_space = (front_sensor_dist > 100) && (right_sensor_dist > 100) && (left_sensor_dist > 100);
+//            if (right_sensor_dist != 0 && !empty_space) {
+
+            if (right_sensor_dist != 0) {
+                if (right_sensor_dist > 100) {
+                    spin_by = 1;
+                    have_turn = true;
+                }
+            }
+        }
+
+
+        if (is_risky) {
+
+            System.out.println("risk");
+
+            if (!try_to_escape) {
+                try_to_escape = true;
+                have_turn = true;
+
+
+                if (front_risk && !right_risk && !left_risk) {
+                    spin_by = -2;
+                } else if (front_risk && right_risk && !left_risk) {
+                    spin_by = -2;
+                } else if (front_risk && !right_risk && left_risk) {
+                    spin_by = 1;
+                }
+//                else if (right_risk) {
+//                    spin_by = -1;
+//                }
+
+
+//                if (risky_dis < 20) {
+//                    turn_coefficient *= 2;
+//                }
+
+                front_risk = false;
+                right_risk = false;
+                left_risk = false;
+
+            }
+        }
+
+        if (have_turn) {
+            have_turn = false;
+
+            if (spin_by < 0) {
+                start_left_turn = true;
+            } else {
+                start_left_turn = false;
+            }
+
+            spinBy(spin_by * turn_coefficient, true, new Func() {
+                @Override
+                public void method() {
+                    try_to_escape = false;
+                    is_risky = false;
+                }
+            });
+        }
     }
 
     int counter = 0;

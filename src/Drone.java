@@ -121,7 +121,7 @@ public class Drone {
 		}
 	}
 	
-	public void slowDown(int deltaTime) {
+	public void speedDown(int deltaTime) {
 		speed -= (WorldParams.accelerate_per_second*deltaTime/1000);
 		if(speed < 0) {
 			speed = 0;
