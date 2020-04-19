@@ -121,11 +121,15 @@ public class Drone {
 		}
 	}
 	
-	public void slowDown(int deltaTime) {
+	public void speedDown(int deltaTime) {
 		speed -= (WorldParams.accelerate_per_second*deltaTime/1000);
 		if(speed < 0) {
 			speed = 0;
 		}
+	}
+
+	public double getSpeed(){
+		return speed;
 	}
 	
 	
@@ -144,10 +148,7 @@ public class Drone {
 		}
 		//Point p = getPointOnMap();
 		//g.drawImage(mImage,p.getX(),p.getY(),mImage.getWidth(),mImage.getHeight());
-		
-		
-		
-		
+
 		for(int i=0;i<lidars.size();i++) {
 			Lidar lidar = lidars.get(i);
 			lidar.paint(g);
