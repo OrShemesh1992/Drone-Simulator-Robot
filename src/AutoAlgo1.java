@@ -234,10 +234,15 @@ public class AutoAlgo1 {
     boolean right_risk = false;
     boolean left_risk = false;
     boolean start_left_turn = false;
+    boolean start_right_turn = false;
     boolean have_turn = false;
 
     double risky_dis = 0;
     int spin_by = 0;
+    int right_turn_counter = 0;
+
+
+    int return_home = 1;
 
 //    double save_point_after_seconds = 3;
 
@@ -267,6 +272,7 @@ public class AutoAlgo1 {
         Point dronePoint = drone.getOpticalSensorLocation(); //get current place
 
         if (SimulationWindow.return_home) {
+//            return_home = -1;
             //if between drone and last point less than 100 cm
             if (Tools.getDistanceBetweenPoints(getLastPoint(), dronePoint) < max_distance_between_points) {
                 //if we have 0 or 1 point and distance to home point less than 100 cm so is good enough
@@ -278,6 +284,7 @@ public class AutoAlgo1 {
                 }
             }
         } else {
+            return_home = 1;
             //if simulation does not in return home state so add points to map
             if (Tools.getDistanceBetweenPoints(getLastPoint(), dronePoint) >= max_distance_between_points) {
                 points.add(dronePoint);
@@ -293,6 +300,11 @@ public class AutoAlgo1 {
         Lidar lidar2 = drone.lidars.get(2);
         double left_sensor_dist = lidar2.current_distance;
 
+        System.out.println("f: " + front_sensor_dist +
+                ", r: " + right_sensor_dist +
+                ", l: " + left_sensor_dist +
+                ", speed: " + drone.getSpeed());
+
 
         int turn_coefficient = 1;
 
@@ -301,10 +313,7 @@ public class AutoAlgo1 {
             have_turn = true;
         }
 
-//        System.out.println("f: " + front_sensor_dist + ", r: " + right_sensor_dist + ", l: " + left_sensor_dist);
-
         if (!is_risky) {
-            System.out.println("no risk");
 
             drone.speedUp(deltaTime);
 
@@ -314,29 +323,25 @@ public class AutoAlgo1 {
                 }
                 front_risk = true;
                 is_risky = true;
-                risky_dis = front_sensor_dist;
             }
 
             if (right_sensor_dist < max_risky_distance / 2 && right_sensor_dist != 0) {
                 right_risk = true;
                 is_risky = true;
-                risky_dis = Math.min(risky_dis, right_sensor_dist);
             }
 
             if (left_sensor_dist < max_risky_distance / 2 && left_sensor_dist != 0) {
                 left_risk = true;
                 is_risky = true;
-                risky_dis = Math.min(risky_dis, left_sensor_dist);
             }
         }
 
 
         //no risk and check if you far from right wall
-        if (!is_risky) {
+//        if (!is_risky && right_turn_counter < 90) { //turning right more than 90 degrees is prohibited
+        if (!is_risky) { //turning right more than 90 degrees is prohibited
 
 //            if (right_sensor_dist < 300 && right_sensor_dist != 0) {
-//            boolean empty_space = (front_sensor_dist > 100) && (right_sensor_dist > 100) && (left_sensor_dist > 100);
-//            if (right_sensor_dist != 0 && !empty_space) {
 
             if (right_sensor_dist != 0) {
                 if (right_sensor_dist > 100) {
@@ -348,8 +353,6 @@ public class AutoAlgo1 {
 
 
         if (is_risky) {
-
-            System.out.println("risk");
 
             if (!try_to_escape) {
                 try_to_escape = true;
@@ -367,7 +370,6 @@ public class AutoAlgo1 {
 //                    spin_by = -1;
 //                }
 
-
 //                if (risky_dis < 20) {
 //                    turn_coefficient *= 2;
 //                }
@@ -375,9 +377,22 @@ public class AutoAlgo1 {
                 front_risk = false;
                 right_risk = false;
                 left_risk = false;
-
             }
         }
+
+
+
+        //turn right counter
+        if (spin_by > 0) {
+            right_turn_counter++;
+        } else {
+            right_turn_counter = 0;
+        }
+
+        if (right_turn_counter >= 90) {
+            spin_by = 0;
+        }
+
 
         if (have_turn) {
             have_turn = false;
@@ -388,7 +403,7 @@ public class AutoAlgo1 {
                 start_left_turn = false;
             }
 
-            spinBy(spin_by * turn_coefficient, true, new Func() {
+            spinBy(spin_by * turn_coefficient * return_home, true, new Func() {
                 @Override
                 public void method() {
                     try_to_escape = false;

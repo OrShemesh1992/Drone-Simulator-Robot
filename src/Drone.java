@@ -127,6 +127,10 @@ public class Drone {
 			speed = 0;
 		}
 	}
+
+	public double getSpeed(){
+		return speed;
+	}
 	
 	
 	boolean initPaint = false;
