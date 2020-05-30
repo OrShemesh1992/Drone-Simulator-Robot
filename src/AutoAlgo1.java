@@ -236,11 +236,10 @@ public class AutoAlgo1 {
     boolean start_left_turn = false;
     boolean start_right_turn = false;
     boolean have_turn = false;
-
     double risky_dis = 0;
     int spin_by = 0;
     int right_turn_counter = 0;
-
+    int have_turn_counter = 0;
 
     int return_home = 1;
 
@@ -286,12 +285,17 @@ public class AutoAlgo1 {
         } else {
             return_home = 1;
             //if simulation does not in return home state so add points to map
-            if (Tools.getDistanceBetweenPoints(getLastPoint(), dronePoint) >= max_distance_between_points) {
+            if (Tools.getDistanceBetweenPoints(getLastPoint(), dronePoint) >= max_distance_between_points
+            		||have_turn_counter%200==0) {
                 points.add(dronePoint);
                 mGraph.addVertex(dronePoint);
             }
         }
-
+        if(have_turn) {
+        	have_turn_counter++;
+        	have_turn = false;
+        }
+        
 
         Lidar lidar = drone.lidars.get(0);
         double front_sensor_dist = lidar.current_distance;
@@ -358,7 +362,6 @@ public class AutoAlgo1 {
                 try_to_escape = true;
                 have_turn = true;
 
-
                 if (front_risk && !right_risk && !left_risk) {
                     spin_by = -2;
                 } else if (front_risk && right_risk && !left_risk) {
@@ -395,8 +398,8 @@ public class AutoAlgo1 {
 
 
         if (have_turn) {
-            have_turn = false;
-
+            
+            
             if (spin_by < 0) {
                 start_left_turn = true;
             } else {
