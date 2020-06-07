@@ -3,10 +3,14 @@ import java.text.DecimalFormat;
 public class Point {
 	public double x;
 	public double y;
+
+	public boolean decision_point;
+	public MovingInfo moving_info;
 	
 	public Point(double x,double y) {
 		this.x = x;
 		this.y = y;
+		decision_point = false;
 	}
 	
 	public Point(Point p) {

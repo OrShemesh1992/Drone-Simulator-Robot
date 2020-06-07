@@ -1,3 +1,5 @@
+import com.sun.xml.internal.ws.server.DefaultResourceInjector;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
@@ -195,7 +197,15 @@ public class AutoAlgo1 {
     public void paintPoints(Graphics g) {
         for (int i = 0; i < points.size(); i++) {
             Point p = points.get(i);
+            if (p.decision_point) {
+                g.setColor(Color.red);
+            }
+//            else {
+//                g.setColor(Color.black);
+//            }
             g.drawOval((int) p.x + (int) drone.startPoint.x - 10, (int) p.y + (int) drone.startPoint.y - 10, 20, 20);
+            g.setColor(Color.black);
+
         }
 
     }
@@ -226,7 +236,7 @@ public class AutoAlgo1 {
     boolean isLeftRightRotationEnable = true;
 
     boolean is_risky = false;
-    int max_risky_distance = 100;
+    double max_risky_distance = 150;
     boolean try_to_escape = false;
 
 
@@ -237,11 +247,23 @@ public class AutoAlgo1 {
     boolean start_right_turn = false;
     boolean have_turn = false;
     double risky_dis = 0;
-    int spin_by = 0;
+    double spin_by = 0;
+
+    boolean high_priority = false;
+    Point last_point;
+
+    int decision_point_limit = 0;
+
     int right_turn_counter = 0;
+    int left_turn_counter = 0;
+
+    int right_angle_counter = 0;
+    int left_angle_counter = 0;
+
     int have_turn_counter = 0;
 
-    int return_home = 1;
+    boolean return_home = false;
+
 
 //    double save_point_after_seconds = 3;
 
@@ -271,7 +293,7 @@ public class AutoAlgo1 {
         Point dronePoint = drone.getOpticalSensorLocation(); //get current place
 
         if (SimulationWindow.return_home) {
-//            return_home = -1;
+            return_home = true;
             //if between drone and last point less than 100 cm
             if (Tools.getDistanceBetweenPoints(getLastPoint(), dronePoint) < max_distance_between_points) {
                 //if we have 0 or 1 point and distance to home point less than 100 cm so is good enough
@@ -283,138 +305,288 @@ public class AutoAlgo1 {
                 }
             }
         } else {
-            return_home = 1;
+            return_home = false;
             //if simulation does not in return home state so add points to map
-            if (Tools.getDistanceBetweenPoints(getLastPoint(), dronePoint) >= max_distance_between_points
-            		||have_turn_counter%200==0) {
+            if (Tools.getDistanceBetweenPoints(getLastPoint(), dronePoint) >= max_distance_between_points) {
+//            		||have_turn_counter%200==0) {
                 points.add(dronePoint);
                 mGraph.addVertex(dronePoint);
+//                System.out.println(dronePoint.toString());
             }
         }
-        if(have_turn) {
-        	have_turn_counter++;
-        	have_turn = false;
-        }
-        
 
-        Lidar lidar = drone.lidars.get(0);
-        double front_sensor_dist = lidar.current_distance;
-        Lidar lidar1 = drone.lidars.get(1);
-        double right_sensor_dist = lidar1.current_distance;
-        Lidar lidar2 = drone.lidars.get(2);
-        double left_sensor_dist = lidar2.current_distance;
+        Point crossroad_point = inDecisionPoint(dronePoint);
 
-        System.out.println("f: " + front_sensor_dist +
-                ", r: " + right_sensor_dist +
-                ", l: " + left_sensor_dist +
-                ", speed: " + drone.getSpeed());
+        if (crossroad_point != null && !return_home) {
+//            System.out.println("point: " + crossroad_point.moving_info.right_way);
+            double turn_angle = 0;
+            if (crossroad_point.moving_info.left_way != -1) {
 
-
-        int turn_coefficient = 1;
-
-        if (drone.getGyroRotation() % 359 < 1 && !start_left_turn) {
-            spin_by = 1;
-            have_turn = true;
-        }
-
-        if (!is_risky) {
-
-            drone.speedUp(deltaTime);
-
-            if (front_sensor_dist < max_risky_distance && front_sensor_dist != 0) {
-                if (front_sensor_dist < 30) {
-                    drone.speedDown(deltaTime * 10000);
+                if (comeFromSide(crossroad_point.moving_info.direction, drone.getGyroRotation())) {
+                    System.out.println("COME FROM FRONT");
+                    turn_angle = crossroad_point.moving_info.left_way - drone.getGyroRotation();
                 }
-                front_risk = true;
-                is_risky = true;
-            }
-
-            if (right_sensor_dist < max_risky_distance / 2 && right_sensor_dist != 0) {
-                right_risk = true;
-                is_risky = true;
-            }
-
-            if (left_sensor_dist < max_risky_distance / 2 && left_sensor_dist != 0) {
-                left_risk = true;
-                is_risky = true;
-            }
-        }
-
-
-        //no risk and check if you far from right wall
-//        if (!is_risky && right_turn_counter < 90) { //turning right more than 90 degrees is prohibited
-        if (!is_risky) { //turning right more than 90 degrees is prohibited
-
-//            if (right_sensor_dist < 300 && right_sensor_dist != 0) {
-
-            if (right_sensor_dist != 0) {
-                if (right_sensor_dist > 100) {
-                    spin_by = 1;
-                    have_turn = true;
+                //come from right side to current point
+                else if (comeFromSide(crossroad_point.moving_info.left_way, drone.getGyroRotation())) {
+                    System.out.println("COME FROM LEFT");
+                    if (crossroad_point.moving_info.right_way != -1) {
+                        turn_angle = drone.getGyroRotation() - crossroad_point.moving_info.right_way;
+                        crossroad_point.moving_info.rightWayIsChecked();
+                    } else {
+                        turn_angle = (crossroad_point.moving_info.direction + 180) - drone.getGyroRotation();
+                    }
                 }
-            }
-        }
-
-
-        if (is_risky) {
-
-            if (!try_to_escape) {
-                try_to_escape = true;
-                have_turn = true;
-
-                if (front_risk && !right_risk && !left_risk) {
-                    spin_by = -2;
-                } else if (front_risk && right_risk && !left_risk) {
-                    spin_by = -2;
-                } else if (front_risk && !right_risk && left_risk) {
-                    spin_by = 1;
+                //come from back of point
+                else {
+                    System.out.println("COME FROM BACK");
+                    turn_angle = (crossroad_point.moving_info.direction + 360 - crossroad_point.moving_info.left_way) % 360;
                 }
-//                else if (right_risk) {
-//                    spin_by = -1;
-//                }
-
-//                if (risky_dis < 20) {
-//                    turn_coefficient *= 2;
-//                }
-
-                front_risk = false;
-                right_risk = false;
-                left_risk = false;
+                crossroad_point.moving_info.leftWayIsChecked();
+            } else if (crossroad_point.moving_info.right_way != -1) {
+                //come from front way so turn to right open way
+                if (comeFromSide(crossroad_point.moving_info.direction, drone.getGyroRotation())) {
+                    System.out.println("COME FROM FRONT");
+                    turn_angle = crossroad_point.moving_info.right_way - drone.getGyroRotation();
+                }
+                //come from right side of point
+                else if (comeFromSide(crossroad_point.moving_info.right_way, drone.getGyroRotation())) {
+                    System.out.println("COME FROM RIGHT");
+                    turn_angle = ((crossroad_point.moving_info.direction + 180) % 360) - drone.getGyroRotation();
+                }
+                //come from back of point
+                else {
+                    System.out.println("COME FROM BACK");
+                    turn_angle = (crossroad_point.moving_info.right_way + (360 - drone.getGyroRotation())) % 360;
+                }
+                crossroad_point.moving_info.rightWayIsChecked();
             }
-        }
 
 
+            if (turn_angle != 0) {
+                speedDown();
+                spinBy(turn_angle, true, new Func() {
+                    @Override
+                    public void method() {
+                        if (drone.lidars.get(0).current_distance > 100) {
+                            speedUp();
+                        }
+                    }
+                });
+            }
 
-        //turn right counter
-        if (spin_by > 0) {
-            right_turn_counter++;
+            //function
+        } else if (!return_home) {
+            if (have_turn) {
+                have_turn_counter++;
+                have_turn = false;
+            }
+
+            double[] lidar_distance = getLidarsDistances();
+            double front_sensor_dist = lidar_distance[0];
+            double right_sensor_dist = lidar_distance[1];
+            double left_sensor_dist = lidar_distance[2];
+
+            checkDecisionPoint(front_sensor_dist, right_sensor_dist, left_sensor_dist, dronePoint);
+
+//            System.out.println("f: " + front_sensor_dist +
+//                    ", r: " + right_sensor_dist +
+//                    ", l: " + left_sensor_dist +
+//                    ", speed: " + drone.getSpeed());
+
+
+            if (!is_risky) {
+                checkSpeedAccelerate(front_sensor_dist);
+                checkRisks(front_sensor_dist, right_sensor_dist, left_sensor_dist, deltaTime);
+            }
+
+            if (!is_risky) {
+                checkChangeTurn();
+            }
+
+            if (is_risky) {
+                solveRisk(right_sensor_dist, left_sensor_dist);
+            }
+
+
+            if (have_turn) {
+                have_turn = false;
+
+                spinBy(spin_by, false, new Func() {
+                    @Override
+                    public void method() {
+                        try_to_escape = false;
+                        is_risky = false;
+                    }
+                });
+                spin_by = 0;
+            }
         } else {
-            right_turn_counter = 0;
-        }
 
-        if (right_turn_counter >= 90) {
-            spin_by = 0;
-        }
-
-
-        if (have_turn) {
-            
-            
-            if (spin_by < 0) {
-                start_left_turn = true;
-            } else {
-                start_left_turn = false;
-            }
-
-            spinBy(spin_by * turn_coefficient * return_home, true, new Func() {
-                @Override
-                public void method() {
-                    try_to_escape = false;
-                    is_risky = false;
-                }
-            });
         }
     }
+
+    private double[] getLidarsDistances() {
+        double[] distances = {
+                drone.lidars.get(0).current_distance,
+                drone.lidars.get(1).current_distance,
+                drone.lidars.get(2).current_distance
+        };
+        return distances;
+    }
+
+    private void checkSpeedAccelerate(double front_sensor_dist) {
+        if (front_sensor_dist < 300) {
+            drone.speedDown(0.01);
+        } else {
+            drone.speedUp(0.0001);
+        }
+    }
+
+    private void checkRisks(double front_dist, double right_dist, double left_dist, int deltaTime) {
+        if (front_dist < max_risky_distance && front_dist != 0) {
+            if (front_dist < 30) {
+                drone.speedDown(deltaTime * 10000);
+            }
+            front_risk = true;
+            is_risky = true;
+        }
+
+        if (right_dist < max_risky_distance / 2 && right_dist != 0) {
+            right_risk = true;
+            is_risky = true;
+        }
+
+        if (left_dist < max_risky_distance / 2 && left_dist != 0) {
+            left_risk = true;
+            is_risky = true;
+        }
+    }
+
+    private void checkChangeTurn() {
+        if (spin_by < 0) {
+            left_angle_counter++;
+            right_angle_counter = 0;
+            if (left_angle_counter > 80) {
+                left_turn_counter = left_turn_counter + 1;
+                if (right_turn_counter == 3) {
+                    //loop
+                    spin_by = 1;
+                    left_turn_counter = 0;
+                }
+            }
+        } else if (spin_by > 0) {
+            right_angle_counter++;
+            left_angle_counter = 0;
+            if (right_angle_counter > 80) {
+                right_turn_counter = right_turn_counter + 1;
+                if (right_turn_counter == 3) {
+                    //loop
+                    spin_by = -1;
+                    right_turn_counter = 0;
+                }
+            }
+        }
+    }
+
+    private void solveRisk(double right_sensor_dist, double left_sensor_dist) {
+        if (!try_to_escape) {
+            try_to_escape = true;
+            have_turn = true;
+            if (front_risk && !right_risk && !left_risk) {
+                if (right_sensor_dist > left_sensor_dist - 5) {
+                    spin_by = 1;
+                } else if (left_sensor_dist > right_sensor_dist - 5) {
+                    spin_by = -1;
+                } else {
+                    spin_by = 1;
+                }
+            } else if (front_risk && right_risk && !left_risk) {
+                spin_by = -1;
+            } else if (front_risk && !right_risk && left_risk) {
+                spin_by = 1;
+            }
+
+            front_risk = false;
+            right_risk = false;
+            left_risk = false;
+        }
+    }
+
+    private void checkDecisionPoint(double front_sensor_dist, double right_sensor_dist, double left_sensor_dist, Point p) {
+        int open_ways = 0;
+
+        MovingInfo moving_info = new MovingInfo(drone.getGyroRotation());
+
+        if (front_sensor_dist > 299) {
+            open_ways++;
+            moving_info.setFrontWay();
+        }
+        if (right_sensor_dist > 299) {
+            open_ways++;
+            moving_info.setRightWay(drone.getGyroRotation());
+        }
+        if (left_sensor_dist > 299) {
+            open_ways++;
+            moving_info.setLeftWay(drone.getGyroRotation());
+        }
+
+        if (open_ways > 1) {
+
+            p.decision_point = true;
+            p.moving_info = moving_info;
+//            System.out.println(moving_info.toString());
+            if (!checkIfThereOtherRedPoint(p)) {//if no other red point in environment then add point
+                points.add(p);
+                mGraph.addVertex(p);
+            }
+        }
+
+    }
+
+    private boolean checkIfThereOtherRedPoint(Point current) {
+
+        for (Point p : points) {
+            if (p.decision_point && Tools.getDistanceBetweenPoints(p, current) < max_distance_between_points) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private Point inDecisionPoint(Point current) {
+
+//        if(getLastPoint().decision_point && Tools.getDistanceBetweenPoints(getLastPoint(), current) < 150){
+        if (getLastPoint().decision_point) {
+            return null;
+        }
+
+        for (Point previous_point : points) {
+            if (previous_point.decision_point) {
+                if (Tools.getDistanceBetweenPoints(previous_point, current) < 50) {
+//                    System.out.println(previous_point.moving_info.toString());
+                    return previous_point;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private boolean comeFromSide(double open_way_angle, double current_angle) {
+        if ((open_way_angle + 135) % 360 < current_angle && current_angle < (open_way_angle + 225) % 360) {
+            return true;
+        }
+        return false;
+    }
+
+//    private boolean comeFromLeftSide(double left_way_angle, double current_angle) {
+//        if ((left_way_angle + 135) % 360 < current_angle && current_angle < (left_way_angle + 225) % 360) {
+//            return true;
+//        }
+//        return false;
+//    }
+
 
     int counter = 0;
 
@@ -486,7 +658,7 @@ public class AutoAlgo1 {
             return;
         }
 
-        int direction = (int) (degrees_left_to_rotate / Math.abs(degrees_left_to_rotate));
+        double direction = (degrees_left_to_rotate / Math.abs(degrees_left_to_rotate));
         drone.rotateLeft(deltaTime * direction);
 
     }
