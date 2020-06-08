@@ -14,7 +14,7 @@ public class MovingInfo {
     }
 
     public void setFrontWay(){
-        front_way = direction;
+        front_way = -1;
     }
 
     public void setRightWay(double direction){

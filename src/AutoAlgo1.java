@@ -320,62 +320,86 @@ public class AutoAlgo1 {
         if (crossroad_point != null && !return_home) {
 //            System.out.println("point: " + crossroad_point.moving_info.right_way);
             double turn_angle = 0;
-            if (crossroad_point.moving_info.left_way != -1) {
 
+            if (crossroad_point.moving_info.left_way != -1) {
                 if (comeFromSide(crossroad_point.moving_info.direction, drone.getGyroRotation())) {
-                    System.out.println("COME FROM FRONT");
-                    turn_angle = crossroad_point.moving_info.left_way - drone.getGyroRotation();
+                    System.out.println("COME FROM FRONT with left turn");
+//                    turn_angle = crossroad_point.moving_info.left_way - drone.getGyroRotation();
+                    turn_angle = ((360 + crossroad_point.moving_info.left_way) - drone.getGyroRotation()) % 360;
                 }
-                //come from right side to current point
+                //come from left side to current point
                 else if (comeFromSide(crossroad_point.moving_info.left_way, drone.getGyroRotation())) {
-                    System.out.println("COME FROM LEFT");
+                    System.out.println("COME FROM LEFT with left turn");
                     if (crossroad_point.moving_info.right_way != -1) {
-                        turn_angle = drone.getGyroRotation() - crossroad_point.moving_info.right_way;
+                        turn_angle = crossroad_point.moving_info.right_way - drone.getGyroRotation();
                         crossroad_point.moving_info.rightWayIsChecked();
                     } else {
-                        turn_angle = (crossroad_point.moving_info.direction + 180) - drone.getGyroRotation();
+                        return_home = true;
+//                        turn_angle = (crossroad_point.moving_info.direction + 180) - drone.getGyroRotation();
+                        turn_angle = ((360 + (crossroad_point.moving_info.direction + 180)) - drone.getGyroRotation()) % 360;
                     }
                 }
                 //come from back of point
                 else {
-                    System.out.println("COME FROM BACK");
-                    turn_angle = (crossroad_point.moving_info.direction + 360 - crossroad_point.moving_info.left_way) % 360;
+                    return_home = true;
+                    System.out.println("COME FROM BACK with left turn");
+//                    turn_angle = (crossroad_point.moving_info.direction + 360 - crossroad_point.moving_info.left_way) % 360;
+                    turn_angle = ((crossroad_point.moving_info.direction + 180 + 360) - crossroad_point.moving_info.left_way) % 360;
                 }
                 crossroad_point.moving_info.leftWayIsChecked();
             } else if (crossroad_point.moving_info.right_way != -1) {
                 //come from front way so turn to right open way
                 if (comeFromSide(crossroad_point.moving_info.direction, drone.getGyroRotation())) {
-                    System.out.println("COME FROM FRONT");
+                    System.out.println("COME FROM FRONT with right turn");
                     turn_angle = crossroad_point.moving_info.right_way - drone.getGyroRotation();
+//                    turn_angle = (crossroad_point.moving_info.right_way - (360 + drone.getGyroRotation()) % 360);
                 }
                 //come from right side of point
                 else if (comeFromSide(crossroad_point.moving_info.right_way, drone.getGyroRotation())) {
-                    System.out.println("COME FROM RIGHT");
+                    System.out.println("COME FROM RIGHT with right turn");
+                    return_home = true;
+//                    turn_angle = ((crossroad_point.moving_info.direction + 180) % 360) - drone.getGyroRotation();
                     turn_angle = ((crossroad_point.moving_info.direction + 180) % 360) - drone.getGyroRotation();
                 }
                 //come from back of point
                 else {
-                    System.out.println("COME FROM BACK");
-                    turn_angle = (crossroad_point.moving_info.right_way + (360 - drone.getGyroRotation())) % 360;
+                    System.out.println("COME FROM BACK with right turn");
+//                    turn_angle = (crossroad_point.moving_info.right_way + (360 - drone.getGyroRotation())) % 360;
+//                    turn_angle = (crossroad_point.moving_info.right_way + (360 - drone.getGyroRotation())) % 360;
+                    turn_angle = (360 + (crossroad_point.moving_info.right_way - drone.getGyroRotation())) % 360;
                 }
                 crossroad_point.moving_info.rightWayIsChecked();
+            } if (turn_angle != 0) {
+                speedDown();
+                spinBy(turn_angle, true, new Func() {
+                    @Override
+                    public void method() {
+//                        if (drone.lidars.get(0).current_distance > 100) {
+                            speedUp();
+//                        }
+                    }
+                });
             }
+        } else if (crossroad_point != null && return_home) {
 
+            double turn_angle = 0;
+            double temp_turn_angle = 0;
+            temp_turn_angle = ((crossroad_point.moving_info.direction + 180) % 360) - drone.getGyroRotation();
+            turn_angle = Math.abs(crossroad_point.moving_info.direction + 180 - drone.getGyroRotation()) > 20 ? temp_turn_angle : 0;
 
             if (turn_angle != 0) {
                 speedDown();
                 spinBy(turn_angle, true, new Func() {
                     @Override
                     public void method() {
-                        if (drone.lidars.get(0).current_distance > 100) {
-                            speedUp();
-                        }
+                        speedUp();
                     }
                 });
             }
 
-            //function
-        } else if (!return_home) {
+            points.remove(crossroad_point);
+
+        } else {
             if (have_turn) {
                 have_turn_counter++;
                 have_turn = false;
@@ -420,8 +444,6 @@ public class AutoAlgo1 {
                 });
                 spin_by = 0;
             }
-        } else {
-
         }
     }
 
@@ -534,7 +556,6 @@ public class AutoAlgo1 {
 
             p.decision_point = true;
             p.moving_info = moving_info;
-//            System.out.println(moving_info.toString());
             if (!checkIfThereOtherRedPoint(p)) {//if no other red point in environment then add point
                 points.add(p);
                 mGraph.addVertex(p);
@@ -564,7 +585,6 @@ public class AutoAlgo1 {
         for (Point previous_point : points) {
             if (previous_point.decision_point) {
                 if (Tools.getDistanceBetweenPoints(previous_point, current) < 50) {
-//                    System.out.println(previous_point.moving_info.toString());
                     return previous_point;
                 }
             }
@@ -579,14 +599,6 @@ public class AutoAlgo1 {
         }
         return false;
     }
-
-//    private boolean comeFromLeftSide(double left_way_angle, double current_angle) {
-//        if ((left_way_angle + 135) % 360 < current_angle && current_angle < (left_way_angle + 225) % 360) {
-//            return true;
-//        }
-//        return false;
-//    }
-
 
     int counter = 0;
 

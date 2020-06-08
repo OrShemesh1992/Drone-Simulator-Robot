@@ -188,14 +188,16 @@ public class SimulationWindow {
         JButton returnBtn = new JButton("Return Home");
         returnBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                return_home = !return_home;
-                algo1.speedDown();
-                algo1.spinBy(180, true, new Func() {
-                    @Override
-                    public void method() {
-                        algo1.speedUp();
-                    }
-                });
+                if(!algo1.return_home){
+                    return_home = !return_home;
+                    algo1.speedDown();
+                    algo1.spinBy(180, true, new Func() {
+                        @Override
+                        public void method() {
+                            algo1.speedUp();
+                        }
+                    });
+                }
             }
         });
         returnBtn.setBounds(750, 40, 150, 30);
