@@ -190,6 +190,7 @@ public class SimulationWindow {
             public void actionPerformed(ActionEvent e) {
                 if(!algo1.return_home){
                     return_home = !return_home;
+                    algo1.return_home = !algo1.return_home;
                     algo1.speedDown();
                     algo1.spinBy(180, true, new Func() {
                         @Override
@@ -248,7 +249,8 @@ public class SimulationWindow {
                 new Point(73, 68),
                 new Point(84, 73),
                 new Point(92, 100),
-                new Point(100, 50)}; //array of start points to the each map
+                new Point(100, 50),
+                new Point(100, 100)}; //array of start points to the each map
 
         Map map = new Map("Maps\\p1" + map_num + ".png", startPoints[map_num - 1]);
 
