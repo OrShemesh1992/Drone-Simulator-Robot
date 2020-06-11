@@ -242,7 +242,7 @@ public class SimulationWindow {
 
 
     public void main() {
-        int map_num = 1;
+        int map_num = 2;
         Point[] startPoints = {
                 new Point(100, 50),
                 new Point(50, 60),
