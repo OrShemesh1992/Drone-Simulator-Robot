@@ -4,7 +4,8 @@
     <list default="true" id="6df8138e-3f9c-4db6-840b-7b9fbaf7efd6" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AutoAlgo1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AutoAlgo1.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SimulationWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SimulationWindow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MovingInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MovingInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Tools.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Tools.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/classes/" />
     <ignored path="$PROJECT_DIR$/bin/" />
@@ -22,7 +23,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/SimulationWindow.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-516">
+            <state relative-caret-position="223">
               <caret line="244" column="23" selection-start-line="244" selection-start-column="23" selection-end-line="244" selection-end-column="23" />
               <folding>
                 <element signature="e#1752#1753#0" expanded="true" />
@@ -82,15 +83,12 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/AutoAlgo1.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1943">
-              <caret line="472" column="12" selection-start-line="472" selection-start-column="12" selection-end-line="472" selection-end-column="12" />
+            <state relative-caret-position="101">
+              <caret line="569" column="62" selection-start-line="569" selection-start-column="62" selection-end-line="569" selection-end-column="62" />
               <folding>
                 <element signature="e#1722#1723#0" expanded="true" />
                 <element signature="e#1754#1755#0" expanded="true" />
-                <element signature="e#17976#17977#0" expanded="true" />
-                <element signature="e#18033#18034#0" expanded="true" />
-                <element signature="e#26885#26886#0" expanded="true" />
-                <element signature="e#26941#26942#0" expanded="true" />
+                <element signature="e#27259#27260#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -99,8 +97,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/ConsoleColors.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="19" selection-start-column="19" selection-end-column="19" />
+            <state relative-caret-position="-506">
+              <caret line="16" column="39" selection-start-line="16" selection-start-column="31" selection-end-line="16" selection-end-column="39" />
             </state>
           </provider>
         </entry>
@@ -117,7 +115,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Point.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="132">
+            <state relative-caret-position="-163">
               <caret line="6" column="19" selection-start-line="6" selection-start-column="19" selection-end-line="6" selection-end-column="19" />
             </state>
           </provider>
@@ -126,14 +124,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/MovingInfo.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="19" column="16" selection-start-line="19" selection-start-column="16" selection-end-line="19" selection-end-column="16" />
-              <folding>
-                <element signature="e#312#313#0" expanded="true" />
-                <element signature="e#349#350#0" expanded="true" />
-                <element signature="e#397#398#0" expanded="true" />
-                <element signature="e#447#448#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="110">
+              <caret line="21" column="36" selection-start-line="21" selection-start-column="36" selection-end-line="21" selection-end-column="36" />
             </state>
           </provider>
         </entry>
@@ -141,8 +133,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Tools.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="44">
-              <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+            <state relative-caret-position="110">
+              <caret line="5" column="22" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
             </state>
           </provider>
         </entry>
@@ -150,8 +142,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Drone.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="440">
-              <caret line="28" column="8" selection-start-line="28" selection-start-column="8" selection-end-line="28" selection-end-column="8" />
+            <state>
+              <caret line="20" column="25" lean-forward="true" selection-start-line="20" selection-start-column="25" selection-end-line="20" selection-end-column="25" />
             </state>
           </provider>
         </entry>
@@ -167,17 +159,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>start/</find>
-      <find>toogleAI</find>
-      <find>risky_dis</find>
-      <find>300</find>
-      <find>lidarLimit</find>
-      <find>slo</find>
-      <find>getSp</find>
-      <find>return</find>
-      <find>speedU</find>
-      <find>deltaTime</find>
-      <find>have_turn_c</find>
       <find>setGy</find>
       <find>return ho</find>
       <find>have_turn_counter</find>
@@ -195,8 +176,19 @@
       <find>COME FROM BACK</find>
       <find>TURN A</find>
       <find>max_distance_between_points</find>
-      <find>retu</find>
       <find>yello</find>
+      <find>err</find>
+      <find>NEAR</find>
+      <find>nea</find>
+      <find>prin</find>
+      <find>!= -1</find>
+      <find>right_way</find>
+      <find>last_turn_point</find>
+      <find>decision po</find>
+      <find>free</find>
+      <find>inD</find>
+      <find>retu</find>
+      <find>toStr</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -211,18 +203,18 @@
         <option value="$PROJECT_DIR$/src/SpinMemory.java" />
         <option value="$PROJECT_DIR$/src/Drone.java" />
         <option value="$PROJECT_DIR$/src/Point.java" />
+        <option value="$PROJECT_DIR$/src/Colors.java" />
+        <option value="$PROJECT_DIR$/src/Tools.java" />
         <option value="$PROJECT_DIR$/src/MovingInfo.java" />
         <option value="$PROJECT_DIR$/src/SimulationWindow.java" />
-        <option value="$PROJECT_DIR$/src/Colors.java" />
         <option value="$PROJECT_DIR$/src/AutoAlgo1.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="1382" />
-    <option name="height" value="784" />
+    <option name="x" value="-7" />
+    <option name="width" value="694" />
+    <option name="height" value="735" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -304,12 +296,12 @@
       <workItem from="1591375521192" duration="10608000" />
       <workItem from="1591446080984" duration="20758000" />
       <workItem from="1591516796052" duration="7590000" />
-      <workItem from="1591610843764" duration="46788000" />
+      <workItem from="1591610843764" duration="81578000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="111802000" />
+    <option name="totallyTimeSpent" value="146592000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1376" height="744" extended-state="6" />
@@ -324,7 +316,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.4140753" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3715221" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39934534" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -432,37 +424,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Drone.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="440">
-          <caret line="28" column="8" selection-start-line="28" selection-start-column="8" selection-end-line="28" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/CPU.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="89">
           <caret line="26" column="16" selection-start-line="26" selection-start-column="16" selection-end-line="26" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Tools.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="44">
-          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/MovingInfo.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="19" column="16" selection-start-line="19" selection-start-column="16" selection-end-line="19" selection-end-column="16" />
-          <folding>
-            <element signature="e#312#313#0" expanded="true" />
-            <element signature="e#349#350#0" expanded="true" />
-            <element signature="e#397#398#0" expanded="true" />
-            <element signature="e#447#448#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -478,7 +443,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Point.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
+        <state relative-caret-position="-163">
           <caret line="6" column="19" selection-start-line="6" selection-start-column="19" selection-end-line="6" selection-end-column="19" />
         </state>
       </provider>
@@ -490,9 +455,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/Tools.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="110">
+          <caret line="5" column="22" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/MovingInfo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="110">
+          <caret line="21" column="36" selection-start-line="21" selection-start-column="36" selection-end-line="21" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/SimulationWindow.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-516">
+        <state relative-caret-position="223">
           <caret line="244" column="23" selection-start-line="244" selection-start-column="23" selection-end-line="244" selection-end-column="23" />
           <folding>
             <element signature="e#1752#1753#0" expanded="true" />
@@ -527,24 +506,28 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConsoleColors.java">
+    <entry file="file://$PROJECT_DIR$/src/Drone.java">
       <provider selected="true" editor-type-id="text-editor">
         <state>
-          <caret column="19" selection-start-column="19" selection-end-column="19" />
+          <caret line="20" column="25" lean-forward="true" selection-start-line="20" selection-start-column="25" selection-end-line="20" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ConsoleColors.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-506">
+          <caret line="16" column="39" selection-start-line="16" selection-start-column="31" selection-end-line="16" selection-end-column="39" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/AutoAlgo1.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1943">
-          <caret line="472" column="12" selection-start-line="472" selection-start-column="12" selection-end-line="472" selection-end-column="12" />
+        <state relative-caret-position="101">
+          <caret line="569" column="62" selection-start-line="569" selection-start-column="62" selection-end-line="569" selection-end-column="62" />
           <folding>
             <element signature="e#1722#1723#0" expanded="true" />
             <element signature="e#1754#1755#0" expanded="true" />
-            <element signature="e#17976#17977#0" expanded="true" />
-            <element signature="e#18033#18034#0" expanded="true" />
-            <element signature="e#26885#26886#0" expanded="true" />
-            <element signature="e#26941#26942#0" expanded="true" />
+            <element signature="e#27259#27260#0" expanded="true" />
           </folding>
         </state>
       </provider>
