@@ -188,7 +188,7 @@ public class SimulationWindow {
         JButton returnBtn = new JButton("Return Home");
         returnBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(!algo1.return_home){
+                if (!algo1.return_home) {
                     return_home = !return_home;
                     algo1.return_home = !algo1.return_home;
                     algo1.speedDown();
@@ -209,7 +209,7 @@ public class SimulationWindow {
             public void actionPerformed(ActionEvent e) {
 //                algo1.mGraph.drawGraph();
                 algo1.myGraph.drawGraph();
-            }
+             }
         });
         Graph.setBounds(900, 40, 150, 30);
         frame.getContentPane().add(Graph);

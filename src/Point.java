@@ -25,9 +25,7 @@ public class Point {
 	
 	@Override
 	public String toString() {
-		DecimalFormat df = new DecimalFormat("#.###");
-		
-		return "(" + df.format(x) + "," + df.format(y) + ")";
+		return "x: " + Tools.round(x) + ", y: "+ Tools.round(y);
 	}
 
 }

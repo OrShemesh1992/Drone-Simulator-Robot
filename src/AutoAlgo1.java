@@ -319,6 +319,16 @@ public class AutoAlgo1 {
         ////////////////////////////////////////////////////////////////////////////////
 
         Point crossroad_point = inDecisionPoint(dronePoint);
+
+        if (last_point == null && crossroad_point != null) {
+            last_point = crossroad_point;
+            myGraph.addPointToGraph(crossroad_point);
+        }
+
+        if (crossroad_point == null) {
+            last_point = null;
+        }
+
         iteration++;
 
         double[] lidars_distance = getLidarsDistances();
@@ -331,16 +341,24 @@ public class AutoAlgo1 {
             checkRisks(front_sensor_dist, right_sensor_dist, left_sensor_dist, deltaTime);
         }
 
-//        System.out.println(myGraph.getSize());
-//        System.out.println("ASDASDASDASd");
 
         if (crossroad_point != null && !return_home && last_turn_point == null) {
+
             double turn_angle = 0;
             MovingInfo movingInfo = crossroad_point.moving_info;
 
             //drone come from front way of decision point
             if (comeFromWay(movingInfo.direction, drone.getGyroRotation())) {
                 System.out.print(ConsoleColors.GREEN_BOLD + "COME FROM FRONT WAY ");
+
+//                if (last_point == null && crossroad_point != null) {
+//                    last_point = crossroad_point;
+//                    double angle = 90 - (crossroad_point.moving_info.direction % 90);
+//                    double xx = Math.sin(Math.toRadians(angle)) * 20;
+//                    double yy = Math.cos(Math.toRadians(90 - angle)) * 20;
+//                    Point point = new Point(crossroad_point.x + xx, crossroad_point.y + yy);
+//                    myGraph.addPointToGraph(point);
+//                }
 
                 if (!movingInfo.right_way_is_checked) {
 
@@ -462,7 +480,7 @@ public class AutoAlgo1 {
 //            turn_angle = Math.abs(crossroad_point.moving_info.direction + 180 - drone.getGyroRotation()) > 20 ? temp_turn_angle : 0;
 
             MovingInfo movingInfo = crossroad_point.moving_info;
-            System.out.println(movingInfo.toString());
+//            System.out.println(movingInfo.toString());
             System.out.print(ConsoleColors.RED_BOLD + "RETURN HOME FROM -> ");
 
             if (comeFromWay(movingInfo.direction, drone.getGyroRotation())) {
@@ -702,11 +720,9 @@ public class AutoAlgo1 {
             p.decision_point = true;
             p.moving_info = moving_info;
             if (!checkIfThereOtherRedPoint(p)) {//if no other red point in environment then add point
-//                System.out.println(p.moving_info.toString());
                 points.add(p);
                 mGraph.addVertex(p);
                 myGraph.addPointToGraph(p);
-                System.out.println("GRAPH SIZE: " + myGraph.getGraphSize() + ", nodes: " +myGraph.toString());
             }
         }
 
@@ -717,9 +733,6 @@ public class AutoAlgo1 {
         for (Point p : points) {
             if (p.decision_point) {
                 if (Tools.getDistanceBetweenPoints(p, current) < max_distance_between_points) {
-//                    if (iteration % 300 == 0) {
-//                        System.err.println("THERE ARE DECISION POINT");
-//                    }
                     return true;
                 }
             }
@@ -730,7 +743,6 @@ public class AutoAlgo1 {
 
     private synchronized Point inDecisionPoint(Point current) {
 
-//        if(getLastPoint().decision_point && Tools.getDistanceBetweenPoints(getLastPoint(), current) < 150){
         if (getLastPoint().decision_point && !return_home) {
             return null;
         }
@@ -771,7 +783,6 @@ public class AutoAlgo1 {
     private boolean comeFromWay(double open_way_angle, double current_angle) {
 
         current_angle = (current_angle + 180) % 360;
-//        current_angle = (current_angle + 180);
 
         if (Math.abs(current_angle - open_way_angle) < 45) {
             return true;
