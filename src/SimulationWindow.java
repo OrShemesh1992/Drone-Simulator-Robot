@@ -207,7 +207,8 @@ public class SimulationWindow {
         JButton Graph = new JButton("Open Graph");
         Graph.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                algo1.mGraph.drawGraph();
+//                algo1.mGraph.drawGraph();
+                algo1.myGraph.drawGraph();
             }
         });
         Graph.setBounds(900, 40, 150, 30);
@@ -242,7 +243,7 @@ public class SimulationWindow {
 
 
     public void main() {
-        int map_num = 2;
+        int map_num = 1;
         Point[] startPoints = {
                 new Point(100, 50),
                 new Point(50, 60),

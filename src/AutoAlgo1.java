@@ -266,6 +266,7 @@ public class AutoAlgo1 {
     boolean return_home = false;
 
     Point last_turn_point;
+    MyGraph myGraph = new MyGraph();
 
 
 //    double save_point_after_seconds = 3;
@@ -306,6 +307,9 @@ public class AutoAlgo1 {
             if (Tools.getDistanceBetweenPoints(getLastPoint(), dronePoint) >= max_distance_between_points) {
                 points.add(dronePoint);
                 mGraph.addVertex(dronePoint);
+//                if (dronePoint.decision_point || points.size() == 0) {
+//                    myGraph.addPoint(dronePoint);
+//                }
             }
         }
 
@@ -327,8 +331,8 @@ public class AutoAlgo1 {
             checkRisks(front_sensor_dist, right_sensor_dist, left_sensor_dist, deltaTime);
         }
 
-//        boolean in_turn_point = inTurnPoint(last_turn_point, dronePoint);
-//        updateDecisionPoint(dronePoint);
+//        System.out.println(myGraph.getSize());
+//        System.out.println("ASDASDASDASd");
 
         if (crossroad_point != null && !return_home && last_turn_point == null) {
             double turn_angle = 0;
@@ -368,14 +372,7 @@ public class AutoAlgo1 {
 
                 if (!movingInfo.left_way_is_checked) {
 
-//                    turn_angle = movingInfo.left_way - drone.getGyroRotation();
                     turn_angle = movingInfo.right_way - ((drone.getGyroRotation() + 180) % 360);
-
-//                    if (turn_angle > 0) {
-//                        turn_angle = (turn_angle - 180) % 180;
-//                    } else {
-//                        turn_angle = (turn_angle + 180) % 180;
-//                    }
 
                     if (turn_angle < -200) {
                         turn_angle = 360 - turn_angle;
@@ -410,26 +407,6 @@ public class AutoAlgo1 {
                     if (turn_angle < -200) {
                         turn_angle = 360 - turn_angle;
                     }
-//
-//                    turn_angle = movingInfo.left_way - ((drone.getGyroRotation() + 180) % 360);
-//
-//                    if (turn_angle > 0) {
-//                        turn_angle = (turn_angle - 180) % 180;
-//                    } else {
-//                        turn_angle = (turn_angle + 180) % 180;
-//                    }
-
-//                    turn_angle = movingInfo.right_way - drone.getGyroRotation();
-//                    turn_angle = movingInfo.left_way - ((drone.getGyroRotation() + 180) % 360);
-//                    turn_angle = 360 - (movingInfo.right_way + drone.getGyroRotation()) % 360;
-
-//                    if (turn_angle < 0) {
-//                        turn_angle = (turn_angle + 180) % 360;
-//                        turn_angle = (turn_angle + 180);
-//                    } else {
-//                        turn_angle = (turn_angle - 180)%360;
-//                        turn_angle = (turn_angle - 180);
-//                    }
 
                     System.out.print(ConsoleColors.GREEN_BOLD + " -> KEEP FORWARD TO RIGHT WAY -> ");
 
@@ -728,6 +705,8 @@ public class AutoAlgo1 {
 //                System.out.println(p.moving_info.toString());
                 points.add(p);
                 mGraph.addVertex(p);
+                myGraph.addPointToGraph(p);
+                System.out.println("GRAPH SIZE: " + myGraph.getGraphSize() + ", nodes: " +myGraph.toString());
             }
         }
 
