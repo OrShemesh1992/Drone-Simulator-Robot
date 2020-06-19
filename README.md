@@ -25,14 +25,20 @@ When the drone returns home he makes the opposite decision and turns left.
 * Run the program in class SimulationWindow.java 
 * Enjoy...
 
+## Graph decisions:
+![image](https://github.com/OrShemesh1992/Drone-Simulator-Robot/blob/master/Picture/graph.1.png)
 
-![image](https://github.com/OrShemesh1992/Drone-Simulator-Robot/blob/master/Picture/1.png)
+![image](https://github.com/OrShemesh1992/Drone-Simulator-Robot/blob/master/Picture/return_home1.png)
+
+![image](https://github.com/OrShemesh1992/Drone-Simulator-Robot/blob/master/Picture/graph.2.png)
+
+![image](https://github.com/OrShemesh1992/Drone-Simulator-Robot/blob/master/Picture/5.png)
+
+
+## Experiments:
 ![image](https://github.com/OrShemesh1992/Drone-Simulator-Robot/blob/master/Picture/2.png)
 ![image](https://github.com/OrShemesh1992/Drone-Simulator-Robot/blob/master/Picture/3.png)
 ![image](https://github.com/OrShemesh1992/Drone-Simulator-Robot/blob/master/Picture/4.png)
-## Return home:
-![image](https://github.com/OrShemesh1992/Drone-Simulator-Robot/blob/master/Picture/return_home1.png)
-![image](https://github.com/OrShemesh1992/Drone-Simulator-Robot/blob/master/Picture/return_home2.png)
 ![image](https://github.com/OrShemesh1992/Drone-Simulator-Robot/blob/master/Picture/return_home3.png)
 
 
