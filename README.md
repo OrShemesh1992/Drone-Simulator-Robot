@@ -6,7 +6,7 @@
 Maxim Marmer&&Or Shemesh&&Netanel Davidov
 
 
-![Watch the video](https://github.com/OrShemesh1992/Drone-Simulator-Robot/blob/master/Picture/WhatsApp%20Video%202020-06-08%20at%2017.47.56.mp4)
+
 
 
 
